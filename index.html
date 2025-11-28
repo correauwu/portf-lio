@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Portfólio — Redações & Contos</title>
+  <meta name="description" content="Portfólio com 15 redações e 5 contos" />
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#94a3b8; --accent:#7c3aed; --glass: rgba(255,255,255,0.04);
+      --radius:14px; --gap:18px; --max-width:1100px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:linear-gradient(180deg,#071028 0%, #071323 60%); color:#e6eef8; -webkit-font-smoothing:antialiased;
+      display:flex; align-items:flex-start; justify-content:center; padding:40px 20px; gap:20px;
+    }
+
+    .wrap{width:100%; max-width:var(--max-width)}
+    header{
+      display:flex; gap:18px; align-items:center; justify-content:space-between; margin-bottom:20px;
+    }
+    .brand{
+      display:flex; gap:14px; align-items:center;
+    }
+    .logo{width:56px; height:56px; border-radius:12px; background:linear-gradient(135deg,var(--accent),#5eead4); display:grid; place-items:center; color:#021022; font-weight:700}
+    h1{margin:0;font-size:20px}
+    p.lead{margin:0;color:var(--muted); font-size:14px}
+
+    .controls{display:flex; gap:12px; align-items:center}
+    .search{background:var(--glass); border:1px solid rgba(255,255,255,0.03); padding:10px 12px; border-radius:12px; min-width:220px}
+    input.search-input{background:transparent;border:0;outline:0;color:inherit;width:100%}
+    .filters{display:flex; gap:8px}
+    button.btn{background:transparent;border:1px solid rgba(255,255,255,0.06); padding:8px 12px;border-radius:10px;color:var(--muted); cursor:pointer}
+    button.btn.active{background:linear-gradient(90deg,var(--accent),#4f46e5); color:white; border:0}
+
+    main{display:grid; grid-template-columns: 1fr 340px; gap:24px}
+
+    /* Grid of cards */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:var(--gap)}
+    .card{background:var(--card); padding:16px; border-radius:12px; box-shadow: 0 6px 20px rgba(2,6,23,0.6); display:flex; flex-direction:column; gap:10px; min-height:140px}
+    .tag{font-size:12px; color:var(--muted)}
+    .title{font-weight:700; font-size:16px; margin:0}
+    .excerpt{color:var(--muted); font-size:13px; margin-top:6px; flex:1}
+    .read{align-self:flex-end; margin-top:8px}
+    a.read-link{display:inline-block; padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.04); text-decoration:none; color:var(--muted); font-size:13px}
+
+    aside.sidebar{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); padding:16px; border-radius:12px; height:fit-content}
+    .meta{color:var(--muted); font-size:13px}
+    .list-compact{display:flex; flex-direction:column; gap:8px; margin-top:12px}
+    .list-compact button{background:transparent; border:1px dashed rgba(255,255,255,0.03); padding:8px; border-radius:8px; color:var(--muted); text-align:left}
+
+    /* Modal reader */
+    .modal{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:60}
+    .modal.active{display:flex}
+    .modal-backdrop{position:absolute; inset:0; background:linear-gradient(180deg, rgba(2,6,23,0.6), rgba(2,6,23,0.85)); backdrop-filter: blur(6px)}
+    .modal-card{position:relative; z-index:61; background:#031126; width:min(980px,95%); max-height:90vh; overflow:auto; border-radius:14px; padding:22px}
+    .modal-header{display:flex; align-items:center; justify-content:space-between; gap:10px}
+    .modal-title{margin:0}
+    .close{background:transparent;border:0;color:var(--muted);cursor:pointer}
+    .modal-content{color:#dbeafe; line-height:1.6; margin-top:12px}
+
+    footer{margin-top:20px; color:var(--muted); font-size:13px}
+
+    /* Responsive */
+    @media (max-width:900px){
+      main{grid-template-columns:1fr}
+      aside.sidebar{order:2}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+    .sr-only{position:absolute; left:-9999px}
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo">PT</div>
+        <div>
+          <h1>Portfólio de Redações & Contos</h1>
+          <p class="lead">15 redações • 5 contos — clique para ler em tela cheia</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="search" title="Pesquisar">
+          <input id="search" class="search-input" placeholder="Pesquisar por título ou palavra-chave..." />
+        </div>
+        <div class="filters" role="tablist">
+          <button class="btn active" data-filter="all">Todos</button>
+          <button class="btn" data-filter="redacao">Redações</button>
+          <button class="btn" data-filter="conto">Contos</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div id="grid" class="grid" aria-live="polite">
+          <!-- cards gerados via JS -->
+        </div>
+        <footer>Desenvolvido por Brenda.</footer>
+      </section>
+
+      <aside class="sidebar">
+        <div class="meta"><strong>Resumo</strong></div>
+        <div class="list-compact" id="summary">
+          <!-- resumo dinâmico -->
+        </div>
+        <hr style="margin:12px 0; border:0; border-top:1px solid rgba(255,255,255,0.03)">
+        <div class="muted" style="font-size:13px">Dicas:</div>
+        <ul style="color:var(--muted); font-size:13px">
+          <li>Edite os textos diretamente no script (seção <code>items</code>).</li>
+          <li>Use tags para organizar temas (ENEM, Crônica, Poesia, etc.).</li>
+          <li>Para publicar online, suba este arquivo junto com assets em um servidor ou GitHub Pages.</li>
+        </ul>
+      </aside>
+    </main>
+
+    <!-- Modal reader -->
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal-backdrop" data-close="backdrop"></div>
+      <article class="modal-card" role="document">
+        <div class="modal-header">
+          <div>
+            <h2 id="modal-title" class="modal-title">Título</h2>
+            <div id="modal-meta" class="muted">Categoria — data</div>
+          </div>
+          <div>
+            <button class="close" id="printBtn" title="Imprimir">🖨️</button>
+            <button class="close" id="closeBtn" title="Fechar">✕</button>
+          </div>
+        </div>
+        <div id="modal-content" class="modal-content"></div>
+      </article>
+    </div>
+
+  </div>
+
+  <script>
+    // ====== Dados: substitua o conteúdo abaixo pelas suas redações e contos ======
+    // Cada item tem: id, title, type ('redacao' ou 'conto'), excerpt (resumo curto), date, tags, content (HTML)
+    const items = [
+      // ----- 15 redações -----
+      {id:1, title:'Redação 1 ', type:'redacao', excerpt:'...', date:'2024-03-10', tags:['tecnologia','sociedade'], content:`<p>Os procedimentos estéticos é algo q afetou muito nessa geração, especialmente aos jovens adultos isso é um assunto sério, adolescentes, adultos e gente de maior de 40 para cima alguns procedimentos Nos últimos tempos, tem crescido o número de jovens que buscam procedimentos estéticos. Isso acontece, principalmente, por causa da influência das redes sociais e dos padrões de beleza que vemos na internet. Muitas vezes, as fotos e vídeos mostram rostos e corpos “perfeitos”, que fazem os jovens acreditarem que precisam mudar algo para se encaixar. Alguns procuram procedimentos simples, como limpeza de pele, clareamento dental ou aplicação de botox preventivo. Outros vão além e fazem cirurgias plásticas, mesmo sem necessidade médica. O problema é que nem todos pensam nos riscos que essas mudanças podem trazer. Além dos custos, existem complicações e até impactos emocionais, como insatisfação constante com a própria aparência. A pressão estética é algo real, e pode afetar a autoestima de quem ainda está construindo sua identidade. Muitas vezes, o jovem não quer mudar por vontade própria, mas para ser aceito ou seguir uma moda passageira. Por isso, é importante refletir, conversar com profissionais de saúde e entender se o desejo é realmente pessoal ou fruto da comparação com os outros. Procedimentos estéticos não são necessariamente ruins, mas precisam ser feitos com segurança e responsabilidade. Mais importante que buscar um “padrão” é aprender a valorizar o que temos de único e cultivar a autoestima. Afinal, a verdadeira beleza está em se sentir bem consigo mesmo. Em resumo, a busca por procedimentos estéticos entre jovens precisa ser feita com consciência e responsabilidade. Mais do que seguir padrões impostos, é essencial valorizar a individualidade e cultivar a autoestima. A beleza verdadeira não está apenas na aparência, mas em se sentir bem consigo mesmo e respeitar quem somos nos mesmos</p>`},
+      {id:2, title:'Redação 2 ', type:'redacao', excerpt:'...', date:'2024-04-12', tags:['educação'], content:`<p>A acessibilidade e a inclusão de pessoas com deficiência no Brasil ainda caminham de forma lenta, mas têm ganhado mais visibilidade nos últimos anos. Apesar de existirem leis importantes, como a Lei Brasileira de Inclusão, o que se percebe no dia a dia é que muitas dessas garantias ficam só no papel. Rampas mal-feitas, calçadas quebradas, falta de materiais adaptados nas escolas e a pouca oferta de emprego mostram que ainda há um longo caminho pela frente. Um dos maiores desafios é a mudança de mentalidade. Muita gente ainda enxerga a pessoa com deficiência como alguém incapaz ou “coitadinho”, quando na verdade o que limita não é a deficiência em si, mas as barreiras criadas pela sociedade. Quando um espaço é acessível, quando a comunicação é clara e quando as oportunidades são iguais, todo mundo consegue participar plenamente. Por outro lado, também é importante reconhecer o avanço de algumas iniciativas. Escolas têm buscado adaptar atividades, empresas estão aprendendo a valorizar a diversidade e campanhas de conscientização têm ajudado a quebrar preconceitos. Ainda é pouco, mas são passos importantes. Promover inclusão não é apenas colocar rampas ou adaptar documentos. É garantir que cada pessoa seja tratada com respeito, autonomia e dignidade. Se o Brasil quiser realmente ser um país justo, precisa encarar a acessibilidade como prioridade — não como favor ou obrigação. Incluir não é um custo: é uma forma de construir uma sociedade mais humana para todos.</p>`},
+      {id:3, title:'Redação 3 ', type:'redacao', excerpt:'...', date:'2024-05-08', tags:['meio-ambiente'], content:`<p>Quando ouvimos de bem-estar e saúde humana só nos imaginos algo simples mas o bem estar físico e psicológico é um tema que precisa dar uma atenção. A qualidade de vida e o bem-estar da população estão diretamente ligados a diversos fatores que se complementam no dia a dia. Entre eles, a saúde é um dos mais importantes. O acesso a serviços de saúde de qualidade, prevenção de doenças e a prática regular de atividades físicas são fundamentais para manter o corpo e a mente equilibrado. Outro ponto essencial é a educação. Pessoas que têm acesso a uma formação adequada não apenas ampliam suas oportunidades de trabalho, como também conseguem tomar decisões mais conscientes sobre alimentação, cuidados pessoais e participação na sociedade. A educação é um caminho para diminuir desigualdades. As condições sociais e econômicas também influenciam muito moradia digna, segurança, transporte de qualidade e oportunidades de emprego justo refletem diretamente no bem-estar das pessoas. Quando esses aspectos estão ausentes, surgem problemas como estresse, violência e exclusão social. Além disso, o convívio social e o lazer são elementos que não podem ser esquecidos. Relações familiares saudáveis, amizades e momentos de descanso ajudam a equilibrar a rotina e a fortalecer a saúde emocional. O meio ambiente, por sua vez, também tem papel central: viver em locais limpos com menor poluição contribui para uma vida mais saudável. Portanto, a qualidade de vida depende de um conjunto de fatores que vão desde a saúde e a educação até as relações sociais e ambientais. Investir nesses aspectos é investir no futuro de toda a população, garantindo não apenas sobrevivência, mas também bem-estar e dignidade.</p>`},
+      {id:4, title:'Redação 4 ', type:'redacao', excerpt:'...', date:'2024-06-20', tags:['saúde'], content:`<p>As mudanças climáticas representam um dos maiores desafios enfrentados pelo Brasil no século XXI. O país, devido à sua vasta extensão territorial e diversidade ambiental, sofre impactos significativos que variam de região para região. O aumento das temperaturas médias, as alterações no regime de chuvas e a intensificação de eventos extremos, como secas prolongadas e enchentes devastadoras, são alguns exemplos claros dessas transformações. Na Amazônia, o desmatamento e as queimadas agravam o efeito estufa, comprometendo a biodiversidade e afetando populações tradicionais que dependem da floresta para sobreviver. No semiárido nordestino, a escassez de água se intensifica, dificultando a agricultura de subsistência e provocando migrações em busca de melhores condições de vida. Já nas grandes cidades, enchentes e ondas de calor se tornam cada vez mais frequentes, colocando em risco a saúde pública e a infraestrutura urbana. Diante desses desafios, torna-se urgente adotar políticas públicas eficazes de mitigação e adaptação. Investimentos em energias renováveis, incentivo à agricultura sustentável e preservação dos biomas brasileiros são medidas fundamentais. Além disso, é necessário ampliar a educação ambiental e fortalecer a consciência coletiva, para que cada cidadão compreenda seu papel na construção de um futuro mais equilibrado. Em síntese, as mudanças climáticas no Brasil não são apenas um problema ambiental, mas também social e econômico. Enfrentá-las exige esforço conjunto entre governo, empresas e sociedade, de modo a proteger não só o patrimônio natural, mas também a qualidade de vida das gerações presentes e futuras.</p>`},
+      {id:5, title:'Redação 5 ', type:'redacao', excerpt:'...', date:'2024-07-01', tags:['trabalho'], content:`<p>O avanço tecnológico trouxe inúmeros benefícios para a sociedade, mas também gerou novos desafios, entre eles o descarte de lixo eletrônico. Celulares, computadores, televisores e outros aparelhos, quando descartados de forma incorreta, tornam-se uma ameaça tanto para o meio ambiente quanto para a saúde humana. Um dos principais problemas está nos materiais presentes nesses equipamentos. Muitos contêm metais pesados, como chumbo, mercúrio e cádmio, que podem contaminar o solo e a água quando jogados em lixões comuns. Essa contaminação, além de prejudicar a fauna e a flora, pode chegar até nós por meio da cadeia alimentar, causando doenças graves, como intoxicações e problemas neurológicos. Outro aspecto preocupante é o aumento constante desse tipo de resíduo. A cada ano, milhões de toneladas de lixo eletrônico são produzidas no mundo, resultado do consumo acelerado e da rápida substituição de aparelhos por versões mais modernas. Essa prática, impulsionada pelo mercado e pelo desejo de sempre ter a última novidade, agrava ainda mais a situação. No entanto, existem caminhos para reduzir esse impacto. A reciclagem adequada, o reaproveitamento de peças e a criação de políticas públicas mais eficientes podem amenizar as consequências desse problema. Além disso, cabe a cada cidadão refletir sobre seus hábitos de consumo e buscar alternativas mais conscientes, prolongando a vida útil de seus dispositivos. Assim, o descarte de lixo eletrônico não deve ser visto apenas como um problema ambiental, mas também como uma questão de responsabilidade coletiva. Cuidar do destino correto desses resíduos é essencial para garantir um futuro mais saudável e sustentável.</p>`},
+      {id:6, title:'Redação 6 ', type:'redacao', excerpt:'...', date:'2024-07-12', tags:['cultura'], content:`<p>O consumo de alimentos ultraprocessados tem crescido de forma significativa nas últimas décadas, tornando-se uma preocupação central para a saúde pública. Esses produtos, como refrigerantes, salgadinhos, biscoitos recheados e comidas prontas, passam por diversos processos industriais e contêm aditivos, conservantes, corantes e altos níveis de açúcar, sódio e gorduras saturadas. Embora sejam práticos e de fácil acesso, sua ingestão frequente pode trazer consequências sérias para o organismo. Entre os principais impactos está o aumento do risco de doenças crônicas, como obesidade, hipertensão, diabetes tipo 2 e doenças cardiovasculares. Isso ocorre porque os ultraprocessados possuem baixo valor nutricional e, geralmente, substituem alimentos naturais e ricos em nutrientes essenciais, como frutas, legumes e grãos integrais. Além disso, o consumo excessivo desses produtos pode afetar o funcionamento do intestino, comprometer a imunidade e até influenciar o humor e a disposição. Outro ponto preocupante é a forma como a publicidade influencia o hábito alimentar, especialmente entre crianças e adolescentes. A apresentação atrativa, os sabores artificiais e a praticidade contribuem para a formação de hábitos prejudiciais que podem se perpetuar na vida adulta. Portanto, é fundamental conscientizar a população sobre os riscos do consumo exagerado de ultraprocessados. Optar por uma alimentação equilibrada, baseada em alimentos frescos e minimamente processados, é uma estratégia essencial para garantir mais qualidade de vida e prevenir problemas de saúde no futuro.</p>`},
+      {id:7, title:'Redação 7 ', type:'redacao', excerpt:'...', date:'2024-08-03', tags:['mobilidade'], content:`<p>A dependência em jogos de apostas na web é um problema que vem crescendo nos últimos anos, especialmente com a facilidade de acesso à internet e a popularização de aplicativos e sites voltados para esse tipo de entretenimento. Muitos fatores contribuem para esse vício, como a busca por dinheiro rápido, a ilusão de que sempre é possível recuperar as perdas e a sensação de adrenalina provocada pelas apostas. Além disso, a propaganda constante e a disponibilidade desses jogos a qualquer hora do dia aumentam as chances de uma pessoa se tornar dependente. Os efeitos da dependência em jogos de apostas são graves e atingem diferentes áreas da vida do indivíduo. No aspecto financeiro, é comum que a pessoa contraia dívidas, perca economias e até coloque em risco o sustento da família. No campo emocional, surgem sentimentos de ansiedade, frustração e até depressão, já que muitas vezes o jogador se sente preso em um ciclo de perdas e tentativas de recuperar o que foi gasto. As relações pessoais também sofrem, pois a pessoa pode se afastar de amigos e familiares, além de perder o interesse em outras atividades importantes. Portanto, a dependência em jogos de apostas online não deve ser vista apenas como um passatempo inofensivo, mas como um problema de saúde que precisa de atenção. A conscientização, o apoio psicológico e até mesmo medidas de controle e regulamentação são fundamentais para reduzir os danos causados por essa prática.</p>`},
+      {id:8, title:'Redação 8 ', type:'redacao', excerpt:'...', date:'2024-09-14', tags:['desigualdade'], content:`<p>O trabalho voluntário é algo que vai alem de só dar seu tempo e esforço é algo que você entrega e faz as coisas com solidariedade e amor no q faz, algo que você se senta bem, ajudando as aqueles que mais precisam de você. Quando as pessoas pensam em trabalhos voluntários pensam que é só ser voluntário de algo simples, mas pensa un pouco mais a fundo ser voluntário não é algo que obriguem a fazer é algo da sua vontade é algo que venha do seu coração, as pessoas não apenas ajudam a comunidade mas também elas mesma se ajudam em si pois permite aprendizado de convivência e de uma nova maneira de enxergar o mundo, em uma reportagem fala uma adolescente de 17 anos que fala q não tenha trabalhado ainda mas q ela dez um curso de barbeira e ela foi parte de uma ação social sendo voluntária para ajudar as pessoas com a profissão dela e traz disso ela depois conseguiu trabalho em uma barbeira e que fala que ajudar em uma ação social ajudou ela em como falar mais com as pessoas e fala que tem outra maneira de como enxergar o mundo.</p>`},
+      {id:9, title:'Redação 9 ', type:'redacao', excerpt:'...', date:'2024-10-02', tags:['política'], content:`<p>O etarismo também conhecido como preconceito etário, é uma forma de descriminação baseada na idade, que afeta principalmente pessoas idosas, mas também pode atingir os mais jovem, esse tipo de preconceito está presentes em diferentes espços da sociedade como no ambiente de trabalho,nas redes sociais e até dentro da família. Paracombater essa realidade, é essencial promover mais empatia respeito a conscientização sobre o valor de cada fase da vida. Um dos caminhos mais importante é a educação, desde cedo as escolas podem trabalhar temas ligados á diversidade e a convivência entre gerações, mostrando que o envelhecimento é um provocasse natural e que as pessoas têm seus direitos e merecem respeito eles têm muito a ensinar. Além disso, os meios de comunicação podem contribuir evitando esteriotipo que retratam idosos como incapazes ou ultrapassados, valorizando história de superação e sabedoria. Outro ponto fundamental é a inclusão dos idosos nas atividades sociais e profissionais, incentivar a troca de experiências entre jovens e adultos maduros enriquece o convívio e quebra preconceito. Combater ele exige mudança de mentalidade e atitudes diárias, quando cada um aprende a enxergar o outro com respeito a sociedade se torna mais justa.</p>`},
+      {id:10, title:'Redação 10 ', type:'redacao', excerpt:'...', date:'2024-10-20', tags:['ciência','ética'], content:`<p>O etarismo também conhecido como preconceito etário, é uma forma de descriminação baseada na idade, que afeta principalmente pessoas idosas, mas também pode atingir os mais jovem, esse tipo de preconceito está presentes em diferentes espços da sociedade como no ambiente de trabalho,nas redes sociais e até dentro da família. Paracombater essa realidade, é essencial promover mais empatia respeito a conscientização sobre o valor de cada fase da vida. Um dos caminhos mais importante é a educação, desde cedo as escolas podem trabalhar temas ligados á diversidade e a convivência entre gerações, mostrando que o envelhecimento é um provocasse natural e que as pessoas têm seus direitos e merecem respeito eles têm muito a ensinar. Além disso, os meios de comunicação podem contribuir evitando esteriotipo que retratam idosos como incapazes ou ultrapassados, valorizando história de superação e sabedoria. Outro ponto fundamental é a inclusão dos idosos nas atividades sociais e profissionais, incentivar a troca de experiências entre jovens e adultos maduros enriquece o convívio e quebra preconceito. Combater ele exige mudança de mentalidade e atitudes diárias, quando cada um aprende a enxergar o outro com respeito a sociedade se torna mais justa.</p>`},
+      {id:11, title:'Redação 11 ', type:'redacao', excerpt:'...', date:'2024-11-04', tags:['juventude'], content:`<p>A educação é um dos pilares mais importantes para o desenvolvimento dos jovens e para a construção de uma sociedade melhor. Por meio dela, é possível adquirir conhecimento, aprender valores e desenvolver habilidades que serão essenciais para o futuro pessoal e profissional de cada um. A escola não é apenas um espaço de aprendizado teórico, mas também um ambiente onde se formam cidadãos conscientes, críticos e preparados para enfrentar os desafios da vida. Além de ensinar conteúdos como matemática, português e ciências, a educação tem um papel fundamental na formação do caráter. É na convivência com colegas e professores que o jovem aprende sobre respeito, responsabilidade e empatia. Esses valores ajudam a criar uma sociedade mais justa e solidária. Outro ponto importante é que a educação abre portas para oportunidades. Um jovem bem instruído tem mais chances de conquistar um bom emprego, realizar seus sonhos e contribuir positivamente com sua comunidade. Por isso, investir na educação é investir no futuro. Em resumo, a educação é o caminho que transforma realidades e constrói o amanhã. Quando o jovem tem acesso a uma edução a de qualidade, ele não apenas muda a própria vida, mas também ajuda a mudar o mundo ao seu redor.</p>`},
+      {id:12, title:'Redação 12 ', type:'redacao', excerpt:'...', date:'2024-11-15', tags:['consumo'], content:`<p>A cultura popular brasileira é uma das mais ricas e diversas do mundo. Ela está presente nas festas, músicas, danças, comidas e tradições que fazem parte do nosso dia a dia. No entanto, apesar de toda essa riqueza, a valorização da cultura popular ainda enfrenta muitos desafios, principalmente por causa da falta de reconhecimento e do preconceito cultural que ainda existe em várias partes do país. Muitas vezes, o que vem de fora é mais valorizado do que o que é produzido no Brasil. Jovens conhecem músicas internacionais, mas não sabem o significado de manifestações como o maracatu, o bumba meu boi ou o frevo. Isso acontece porque a mídia e até o sistema educacional nem sempre dão o espaço que a cultura popular merece. Falta incentivo, investimento e divulgação das nossas tradições. Outro desafio é a falta de apoio aos artistas e grupos que mantêm viva essa herança cultural. Sem recursos, muitos acabam desistindo, e tradições importantes correm o risco de desaparecer. Valorizar a cultura popular é reconhecer a identidade do povo brasileiro. É entender que ela representa nossa história, nossas origens e a diversidade que forma o país. Portanto, é essencial que escolas, governos e a própria sociedade se unam para preservar e divulgar essas manifestações, garantindo que elas continuem vivas para as próximas gerações.</p>`},
+      {id:13, title:'Redação 13 ', type:'redacao', excerpt:'...', date:'2024-12-01', tags:['IA','tecnologia'], content:`<p>O saneamento básico é um direito essencial para garantir saúde, dignidade e qualidade de vida à população. No entanto, o Brasil ainda enfrenta grandes desafios nessa área, principalmente em regiões mais pobres e afastadas dos grandes centros urbanos. A falta de acesso à água tratada e à coleta de esgoto afeta milhões de brasileiros, contribuindo para o aumento de doenças e para a degradação do meio ambiente. Para mudar essa realidade, é necessário um conjunto de ações que envolva o poder público, a iniciativa privada e a sociedade. O investimento em infraestrutura é o primeiro passo, com a ampliação de redes de água e esgoto, principalmente nas periferias e áreas rurais. Além disso, é fundamental a criação de políticas públicas eficientes, com fiscalização rigorosa e metas claras para atingir a universalização. Outro caminho importante é a conscientização da população sobre o uso responsável da água e a importância da preservação dos recursos hídricos. A educação ambiental nas escolas e campanhas de informação podem ajudar a formar cidadãos mais comprometidos com o cuidado coletivo. Portanto, a universalização do saneamento básico no Brasil depende de planejamento, investimento e responsabilidade social. Somente com a união de esforços será possível garantir que todos tenham acesso a um serviço tão essencial para a saúde e o bem-estar.</p>`},
+      {id:14, title:'Redação 14 ', type:'redacao', excerpt:'...', date:'2025-02-18', tags:['arte'], content:`<p>O esporte vai muito além da competição e das medalhas. Ele tem um papel fundamental na formação do caráter, na promoção da saúde e, principalmente, na transformação social. Em comunidades marcadas por desigualdade e falta de oportunidades, a prática esportiva surge como um caminho capaz de mudar destinos e oferecer novas perspectivas de vida. Por meio do esporte, muita criança e jovens encontram disciplina, respeito e senso de coletividade. A convivência em grupo ensina valores como cooperação, empatia e superação, que ultrapassam os limites das quadras e campos. Além disso, projetos sociais esportivos são uma alternativa para afastar os jovens da violência e das drogas, abrindo portas para a educação e o mercado de trabalho. Exemplos não faltam de atletas que começaram em condições humildes e, com esforço e dedicação, conseguiram transformar não só suas próprias vidas, mas também inspirar suas comunidades. Isso mostra que o esporte é uma ferramenta poderosa de inclusão e igualdade, capaz de unir pessoas de diferentes origens e realidades. Portanto, investir no esporte é investir em pessoas. Quando o poder público e a sociedade reconhecem essa força transformadora, criam-se oportunidades para um futuro mais justo, saudável e solidário. O esporte, mais do que uma prática física, é um instrumento de cidadania e esperança.</p>`},
+      {id:15, title:'Redação 15 ', type:'redacao', excerpt:'...', date:'2025-05-06', tags:['história'], content:`<p>Amizade é um negócio curioso. Às vezes começa com uma conversa tímida, um “oi” sem muita intenção, e quando você vê, aquela pessoa já sabe seus horários, seus dramas e até a maneira exata como você enrola para contar um segredo. Amigo é esse ser meio mágico que aparece nos dias bons, mas principalmente nos dias em que a vida resolve testar nossa paciência.
+
+Outro dia percebi que a melhor parte da amizade não está nas risadas altas — embora elas sejam essenciais — mas nos silêncios confortáveis. Aquele momento em que você não precisa explicar nada, porque o outro já entendeu tudo só pelo jeitinho que você mexeu no cabelo ou respirou fundo demais. É ali que mora o verdadeiro laço.
+
+Tem também os amigos que são quase um abraço ambulante. Eles chegam, bagunçam a rotina, roubam um pedaço da sua comida sem pedir e ainda assim você fica feliz por terem aparecido. Porque amizade é isso: é dividir o pouco, somar o muito e multiplicar o que faz bem.
+
+No fim das contas, a amizade continua sendo uma das formas mais bonitas de cuidado que a gente inventou. São pedaços nossos espalhados em outras pessoas — e pedaços delas guardados com todo carinho dentro da gente. E é por isso que, mesmo quando o mundo aperta, basta um amigo do lado para lembrar que existe leveza, existe afeto, existe casa.</p>`},
+
+      
+    ];
+
+    // ====== Lógica UI ======
+    const grid = document.getElementById('grid');
+    const summary = document.getElementById('summary');
+    const search = document.getElementById('search');
+    const filterBtns = document.querySelectorAll('[data-filter]');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMeta = document.getElementById('modal-meta');
+    const modalContent = document.getElementById('modal-content');
+    const closeBtn = document.getElementById('closeBtn');
+    const printBtn = document.getElementById('printBtn');
+
+    function renderGrid(showItems){
+      grid.innerHTML = '';
+      showItems.forEach(it=>{
+        const el = document.createElement('article');
+        el.className = 'card';
+        el.innerHTML = `
+          <div class="tag">${it.type === 'redacao' ? 'Redação' : 'Conto'} • ${it.date}</div>
+          <h3 class="title">${it.title}</h3>
+          <div class="excerpt">${it.excerpt}</div>
+          <div class="read"><a class="read-link" href="#" data-id="${it.id}">Ler</a></div>
+        `;
+        grid.appendChild(el);
+      });
+    }
+
+    function renderSummary(items){
+      summary.innerHTML = '';
+      const totalRed = items.filter(i=>i.type==='redacao').length;
+      const totalCont = items.filter(i=>i.type==='conto').length;
+      const last = items.slice().sort((a,b)=> new Date(b.date)-new Date(a.date))[0];
+      const li1 = document.createElement('div'); li1.className='muted'; li1.textContent = `${totalRed} redações — ${totalCont} contos`;
+      const li2 = document.createElement('div'); li2.className='muted'; li2.textContent = `Último publicado: ${last ? last.title + ' ('+ last.date +')' : '—'}`;
+      summary.appendChild(li1); summary.appendChild(li2);
+
+      // lista rápida de títulos
+      items.slice(0,8).forEach(it=>{
+        const btn = document.createElement('button'); btn.textContent = it.title; btn.onclick = ()=> openReader(it.id);
+        summary.appendChild(btn);
+      });
+    }
+
+    function openReader(id){
+      const it = items.find(x=>x.id==id);
+      if(!it) return;
+      modalTitle.textContent = it.title;
+      modalMeta.textContent = `${it.type === 'redacao' ? 'Redação' : 'Conto'} — ${it.date} • ${it.tags.join(', ')}`;
+      modalContent.innerHTML = it.content;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden','false');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function closeReader(){
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden','true');
+      modalTitle.textContent = '';
+      modalContent.innerHTML = '';
+    }
+
+    // event delegation for read links
+    grid.addEventListener('click', (e)=>{
+      const a = e.target.closest('a.read-link');
+      if(!a) return;
+      e.preventDefault();
+      openReader(a.dataset.id);
+    });
+
+    closeBtn.addEventListener('click', closeReader);
+    document.querySelector('.modal-backdrop').addEventListener('click', closeReader);
+
+    printBtn.addEventListener('click', ()=>{
+      // Abre a janela de impressão do browser somente com o conteúdo do modal
+      const w = window.open('','_blank');
+      w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${modalTitle.textContent}</title>`);
+      w.document.write('<style>body{font-family:Inter,Arial; padding:28px; color:#111} h1{font-size:22px}</style>');
+      w.document.write('</head><body>');
+      w.document.write('<h1>'+modalTitle.textContent+'</h1>');
+      w.document.write('<div>'+modalContent.innerHTML+'</div>');
+      w.document.write('</body></html>');
+      w.document.close();
+      w.focus();
+      w.print();
+    });
+
+    // Search + filter
+    function applyFilters(){
+      const q = search.value.trim().toLowerCase();
+      const active = document.querySelector('.btn.active')?.dataset.filter || 'all';
+      let out = items.filter(it=>{
+        if(active !== 'all' && it.type !== active) return false;
+        if(!q) return true;
+        return (it.title+ ' ' + it.excerpt + ' ' + it.tags.join(' ')).toLowerCase().includes(q);
+      });
+      renderGrid(out);
+    }
+
+    search.addEventListener('input', applyFilters);
+    filterBtns.forEach(b=> b.addEventListener('click', ()=>{
+      filterBtns.forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      applyFilters();
+    }));
+
+    // inicializa
+    renderGrid(items);
+    renderSummary(items);
+
+    // Acessibilidade: fechar com Esc
+    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeReader(); });
+
+    /*
+      INSTRUÇÕES RÁPIDAS:
+      - Edite o array `items` no topo do script para substituir títulos e conteúdos.
+      - Para adicionar imagens ou formatação, coloque HTML em `content` (por ex: <p>, <img>, <h3>).
+      - Este arquivo é autocontido: basta salvar como index.html e abrir no navegador.
+    */
+  </script>
+</body>
+</html>
